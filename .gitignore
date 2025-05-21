@@ -3,3 +3,4 @@ tests
 .DS_Store
 data
 __pycache__
+chroma_db_de
