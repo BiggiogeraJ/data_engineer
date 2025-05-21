@@ -10,13 +10,17 @@ CHROMA_PATH = "chroma_db_de"
 
 PROMPT_TEMPLATE = """
 You are an helpful assistant who is an expert in data engineering and mining information intelligence.
-Answer the question using your broad wealth of knoweldge but primarily based on the following context:
+Answer the question using your broad wealth of knoweldge and in addition cross check and supplement it with the context provided below:
 
 {context}
 
+If you deem it necessary also add a brief useful example to illustrate your answer.
+If the context does not provide enough information to answer the question, say "I don't know" and do not make up an answer.
+If the context provides information that is not relevant to the question, do not include it in your answer.
+Do not refer to the context explicitly in your answer by saying "according to the context" or similar phrases but rather weave it in to your answer.
 ---
 
-Answer the question based on the above context: {question}
+Answer the question following the context and the instructions provided above: {question}
 """
 
 def query_rag(query_text: str):
@@ -35,9 +39,12 @@ def query_rag(query_text: str):
     response_text = model.invoke(prompt)
 
     sources = [" ".join([doc.metadata.get("source", None), ', page: '+str(doc.metadata.get("page", None))]) for doc in results]
-    formatted_response = f"Response: {response_text}\nSources: {sources}"
+    formatted_response = f"Response: \n{response_text}\nSources: {sources}"
+    print('-----------------------------------------------------------------------------')
+    print(' ')
     print(formatted_response)
-
+    print(' ')
+    print('-----------------------------------------------------------------------------')
     return response_text
 
 def main():
