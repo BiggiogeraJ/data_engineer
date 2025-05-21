@@ -26,7 +26,7 @@ def query_rag(query_text: str):
     # Search the DB.
     results = retriever.invoke(query_text)
 
-    context_text = "\n\n---\n\n".join([doc.page_content for doc, _score in results])
+    context_text = "\n\n---\n\n".join([doc.page_content for doc in results])
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt = prompt_template.format(context=context_text, question=query_text)
     # print(prompt)
@@ -34,9 +34,10 @@ def query_rag(query_text: str):
     model = OllamaLLM(model="llama3.2", temperature=0.1)
     response_text = model.invoke(prompt)
 
-    sources = [doc.metadata.get("id", None) for doc, _score in results]
+    sources = [" ".join([doc.metadata.get("source", None), ', page: '+str(doc.metadata.get("page", None))]) for doc in results]
     formatted_response = f"Response: {response_text}\nSources: {sources}"
     print(formatted_response)
+
     return response_text
 
 def main():

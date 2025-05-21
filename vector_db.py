@@ -17,7 +17,7 @@ split_docs = split_documents(documents)
 # Initialize the embedder for embedding text
 embedder = get_embedder()
 
-vector_db = Chroma.from_documents(collection_name = 'data_engineering', embedding_function = embedder, persist_directory=db_location)
+vector_db = Chroma(collection_name = 'data_engineering', embedding_function = embedder, persist_directory=db_location)
 
 if add_docs:
     docs = []
