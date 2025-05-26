@@ -62,6 +62,8 @@ def create_chroma(chunks: list[Document], path: str, embed_function: callable = 
     else:
         print("✅ No new documents to add")
 
+    return db
+
 def update_chroma(chunks: list[Document], path: str, embed_function: callable = None):
     # Load the existing database.
     db = Chroma(
@@ -88,7 +90,7 @@ def update_chroma(chunks: list[Document], path: str, embed_function: callable = 
         db.add_documents(new_chunks, ids=new_chunk_ids)
     else:
         print("✅ No new documents to add")
-
+    return db
 
 def clear_database(path: str):
     if os.path.exists(path):
@@ -104,6 +106,9 @@ def main():
     parser.add_argument("--update", action="store_true", help="Update the database if you have added new documents or new versions of existing documents.")
 
     args = parser.parse_args()
+    if not (args.create or args.reset or args.update):
+        print("Please specify an action, use --help for the list of available actions.")
+        sys.exit()
 
     documents = load_documents()
     chunks = split_documents(documents)
@@ -119,20 +124,16 @@ def main():
     
     if args.reset:
         print("✨ Clearing Database")
-        clear_database()
-        create_chroma(split_docs, db_location, embedder)
+        clear_database(db_location)
+        vector_db = create_chroma(split_docs, db_location, embedder)
     
     elif args.create:
         print("✨ Creating Database")
-        create_chroma(split_docs, db_location, embedder)
+        vector_db =create_chroma(split_docs, db_location, embedder)
 
     elif args.update:
         print("✨ Updating Database")
-        update_chroma(split_docs, db_location, embedder)
-
-    else:
-        print("Please specify an action, use --help for the list of available actions.")
-        sys.exit()
+        vector_db =update_chroma(split_docs, db_location, embedder)
 
     #Add retreival functionality to vector store
     retriever = vector_db.as_retriever(search_kwargs={"k": 5})

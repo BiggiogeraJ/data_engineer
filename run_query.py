@@ -1,7 +1,7 @@
 from langchain.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
+from langchain_chroma import Chroma
 from embedder import get_embedder
-from vector_db import retriever
 import argparse
 
 
@@ -26,7 +26,8 @@ Answer the question following the context and the instructions provided above: {
 def query_rag(query_text: str):
     # Prepare the DB.
     embedding_function = get_embedder()
-
+    db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
+    retriever = db.as_retriever(search_kwargs={"k": 5})
     # Search the DB.
     results = retriever.invoke(query_text)
 
