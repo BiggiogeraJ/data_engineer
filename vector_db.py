@@ -43,10 +43,6 @@ def calculate_chunk_ids(chunks):
 
 def create_chroma(chunks: list[Document], path: str, embed_function: callable = None):
 
-    if os.path.exists(path):
-        print(f"⚠️  Database already exists at {path}. If you want to reset it, please call the --reset argument.")
-        sys.exit()
-
     # Load the existing database.
     db = Chroma(
         persist_directory=path, embedding_function=embed_function
@@ -127,6 +123,10 @@ def main():
         create_chroma(split_docs, db_location, embedder)
     
     elif args.create:
+        if os.path.exists(db_location):
+            print(f"⚠️  Database already exists at {db_location}. If you want to reset it, please call the --reset argument.")
+            sys.exit()
+        # Create the database if it does not exist.
         print("✨ Creating Database")
         create_chroma(split_docs, db_location, embedder)
 
