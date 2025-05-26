@@ -78,7 +78,7 @@ def update_chroma(chunks: list[Document], path: str, embed_function: callable = 
     # Only add documents that don't exist in the DB.
     new_chunks = []
     for chunk in chunks:
-        if chunk.metadata["id"] not in existing_ids:
+        if "id" not in chunk.metadata.keys():
             new_chunks.append(chunk)
 
     # Calculate Page IDs.
