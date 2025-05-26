@@ -42,6 +42,11 @@ def calculate_chunk_ids(chunks):
 
 
 def create_chroma(chunks: list[Document], path: str, embed_function: callable = None):
+
+    if os.path.exists(path):
+        print(f"⚠️  Database already exists at {path}. If you want to reset it, please call the --reset argument.")
+        sys.exit()
+
     # Load the existing database.
     db = Chroma(
         persist_directory=path, embedding_function=embed_function
@@ -61,8 +66,6 @@ def create_chroma(chunks: list[Document], path: str, embed_function: callable = 
         db.add_documents(chunks_with_ids, ids=chunk_ids)
     else:
         print("✅ No new documents to add")
-
-    return db
 
 def update_chroma(chunks: list[Document], path: str, embed_function: callable = None):
     # Load the existing database.
@@ -90,7 +93,6 @@ def update_chroma(chunks: list[Document], path: str, embed_function: callable = 
         db.add_documents(new_chunks, ids=new_chunk_ids)
     else:
         print("✅ No new documents to add")
-    return db
 
 def clear_database(path: str):
     if os.path.exists(path):
@@ -110,9 +112,6 @@ def main():
         print("Please specify an action, use --help for the list of available actions.")
         sys.exit()
 
-    documents = load_documents()
-    chunks = split_documents(documents)
-
     # Load documents from the specified directory
     documents = load_documents(PATH_TO_PDF_DIR="./data")
     
@@ -125,19 +124,15 @@ def main():
     if args.reset:
         print("✨ Clearing Database")
         clear_database(db_location)
-        vector_db = create_chroma(split_docs, db_location, embedder)
+        create_chroma(split_docs, db_location, embedder)
     
     elif args.create:
         print("✨ Creating Database")
-        vector_db =create_chroma(split_docs, db_location, embedder)
+        create_chroma(split_docs, db_location, embedder)
 
     elif args.update:
         print("✨ Updating Database")
-        vector_db =update_chroma(split_docs, db_location, embedder)
-
-    #Add retreival functionality to vector store
-    retriever = vector_db.as_retriever(search_kwargs={"k": 5})
-    return retriever
+        update_chroma(split_docs, db_location, embedder)
 
 
 if __name__ == "__main__":
