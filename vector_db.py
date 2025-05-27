@@ -89,6 +89,10 @@ def update_chroma(chunks: list[Document], path: str, embed_function: callable = 
         print(f"👉 Adding new documents: {len(new_chunks)}")
         new_chunk_ids = [chunk.metadata["id"] for chunk in new_chunks]
         db.add_documents(new_chunks, ids=new_chunk_ids)
+
+        updated_items = db.get(include=[])  # IDs are always included by default
+        updated_ids = set(updated_items["ids"])
+        print(f"👉 Total documents: {len(updated_ids)}")
     else:
         print("✅ No new documents to add")
 
