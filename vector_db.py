@@ -69,6 +69,9 @@ def update_chroma(chunks: list[Document], path: str, embed_function: callable = 
         persist_directory=path, embedding_function=embed_function
     )
 
+    # Calculate Page IDs.
+    chunks_with_ids = calculate_chunk_ids(chunks)
+
     # Add or Update the documents.
     existing_items = db.get(include=[])  # IDs are always included by default
     existing_ids = set(existing_items["ids"])
@@ -76,16 +79,15 @@ def update_chroma(chunks: list[Document], path: str, embed_function: callable = 
 
     # Only add documents that don't exist in the DB.
     new_chunks = []
-    for chunk in chunks:
-        if "id" not in chunk.metadata.keys():
+    for chunk in chunks_with_ids:
+        if chunk.metadata["id"] not in existing_ids:
             new_chunks.append(chunk)
 
-    # Calculate Page IDs.
-    new_chunks_with_ids = calculate_chunk_ids(new_chunks)
+    print(len(new_chunks), "new chunks to add")
 
-    if len(new_chunks_with_ids):
-        print(f"👉 Adding new documents: {len(new_chunks_with_ids)}")
-        new_chunk_ids = [chunk.metadata["id"] for chunk in new_chunks_with_ids]
+    if len(new_chunks):
+        print(f"👉 Adding new documents: {len(new_chunks)}")
+        new_chunk_ids = [chunk.metadata["id"] for chunk in new_chunks]
         db.add_documents(new_chunks, ids=new_chunk_ids)
     else:
         print("✅ No new documents to add")
