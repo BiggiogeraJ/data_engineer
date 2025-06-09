@@ -1,7 +1,9 @@
+import sys
+sys.path.append("/Users/jacopo.biggiogera@igenius.ai/Desktop/GenAI_projects/data_engineer")
 from langchain.prompts import ChatPromptTemplate
 from langchain_ollama.llms import OllamaLLM
 from langchain_chroma import Chroma
-from embedder import get_embedder
+from dataeng.preprocessing.embedder import get_embedder
 import argparse
 
 
