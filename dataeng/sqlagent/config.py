@@ -22,7 +22,7 @@ LLAMA_3_2 = ModelConfig(
 class Config:
     SEED = 42
     MODEL = LLAMA_3_2
-    OLLAMA_CONTEXT_WINDOW = 4096
+    OLLAMA_CONTEXT_WINDOW = 10000
 
     class Paths:
         APP_HOME = Path(os.getenv("APP_HOME", Path(__file__).parent.parent.parent))
