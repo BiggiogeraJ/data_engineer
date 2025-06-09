@@ -43,7 +43,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-load_css("styles.css")
+load_css("../assets/styles.css")
 
 st.header("SQL Agent")
 st.subheader("Ask questions about your SQL database")
