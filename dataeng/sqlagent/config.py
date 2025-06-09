@@ -26,7 +26,7 @@ class Config:
 
     class Path:
         APP_HOME = Path(os.getenv("APP_HOME", Path(__file__).parent.parent))
-        DATA_DIR = APP_HOME / "data"
+        DATA_DIR = APP_HOME / "sqldata"
         DATABASE_PATH = DATA_DIR / "database.db"
 
 
