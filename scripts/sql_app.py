@@ -84,9 +84,9 @@ if prompt := st.chat_input("Ask a question about your SQL database:"):
         message_placeholder.status(random.choice(LOADING_MESSAGES), state="running")
 
         response = ask(
-            prompt=prompt,
-            model=get_model(),
-            history=st.session_state.messages
+            prompt,
+            st.session_state.messages,
+            get_model()
         )
         message_placeholder.markdown(response)
         st.session_state.messages.append(AIMessage(content=response))

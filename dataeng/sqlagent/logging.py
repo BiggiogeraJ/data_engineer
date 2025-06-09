@@ -19,7 +19,7 @@ def log_panel(title: str, content: str, border_style: Style = blue_border_style)
 
     console.log(
         Panel(
-        content=content,
+        content,
         title=title,
         border_style=border_style,
     )
