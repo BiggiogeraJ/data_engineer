@@ -43,15 +43,15 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-load_css("../assets/styles.css")
+load_css("assets/styles.css")
 
 st.header("SQL Agent")
 st.subheader("Ask questions about your SQL database")
 
 with st.sidebar:
     st.write('#Database Information')  
-    st.write(f"**File**: {Config.Path.DATABASE_PATH.relative_to(Config.Path.APP_HOME)}")
-    db_size = Config.Path.DATABASE_PATH.stat().st_size/ (1024 * 1024)  # Size in MB
+    st.write(f"**File**: {Config.Paths.DATABASE_PATH.relative_to(Config.Paths.APP_HOME)}")
+    db_size = Config.Paths.DATABASE_PATH.stat().st_size/ (1024 * 1024)  # Size in MB
     st.write(f"**Size**: {db_size:.2f} MB")
 
     with with_sql_cursor() as cursor:

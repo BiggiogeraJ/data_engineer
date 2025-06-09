@@ -24,8 +24,8 @@ class Config:
     MODEL = LLAMA_3_2
     OLLAMA_CONTEXT_WINDOW = 4096
 
-    class Path:
-        APP_HOME = Path(os.getenv("APP_HOME", Path(__file__).parent.parent))
+    class Paths:
+        APP_HOME = Path(os.getenv("APP_HOME", Path(__file__).parent.parent.parent))
         DATA_DIR = APP_HOME / "sqldata"
         DATABASE_PATH = DATA_DIR / "bank_database.sqlite"
 

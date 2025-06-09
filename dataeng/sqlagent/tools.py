@@ -45,7 +45,7 @@ def with_sql_cursor(readonly = True):
     Yields:
         sqlite3.Cursor: A cursor for executing SQL commands.
     """
-    conn = sqlite3.connect(Config.Path.DATABASE_PATH)
+    conn = sqlite3.connect(Config.Paths.DATABASE_PATH)
     cur = conn.cursor()
     try:
         yield cur
@@ -92,7 +92,7 @@ def sample_table(reasoning: str, table_name:str, row_sample_size: int) -> str:
         reasoning (str): Detailed explanation of why you need to sample this table (relate to the user's query).
         table_name (str): Exact name of the table to sample (case-sensitive, no quotes needed).
         row_sample_size (int): Number of rows to retrieve (reccomended: 3-5 rows for readibility).
-        
+
     Returns:
         str: String with one row per line, showing all columns for each row as tuples.
     """
@@ -116,7 +116,7 @@ def describe_table(reasoning: str, table_name: str) -> str:
     Args:
         reasoning (str): Detailed explanation of why you need to understand this table's structure (relate to the user's query).
         table_name (str): Exact name of the table to describe (case-sensitive, no quotes needed).
-        
+    
     Returns:
         str: String containing table schema information.
     """
@@ -141,7 +141,7 @@ def execute_sql(reasoning: str, sql_query: str) -> str:
     Args:
         reasoning (str): Detailed explanation of why you need to execute this query (relate to the user's query).
         sql_query (str): Complete, properly formatted SQL query (must be a valid SQL statement).
-        
+    
     Returns:
         str: String containing the results of the executed SQL query.
     """
