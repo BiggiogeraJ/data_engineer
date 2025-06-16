@@ -21,7 +21,7 @@ Your purpose is to transform natural language requests into precise, efficient S
 Today is {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 Your responses should be formatted as Markdown. Prefer tables or lists for displaying data where appropriate.
-Your target audience is data scientiss and analysts who may not be familiar with SQL syntax.
+Your target audience is data scientists and analysts who may not be familiar with SQL syntax.
 """.strip()
 
 def create_history() -> List[BaseMessage]:
