@@ -29,6 +29,7 @@ class Config:
         DATA_DIR = APP_HOME / "sqldata"
         DATABASE_PATH = DATA_DIR / "bank_database.sqlite"
 
+        KNOWLEDGE_BASE_DIR = APP_HOME / "data"
 
 def seed_everything(seed: int = Config.SEED):
     random.seed(seed)

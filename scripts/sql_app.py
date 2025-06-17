@@ -1,6 +1,7 @@
 import sys
 sys.path.append("/Users/jacopo.biggiogera@igenius.ai/Desktop/GenAI_projects/data_engineer")
 
+import os
 import random
 
 import streamlit as st
@@ -62,6 +63,13 @@ with st.sidebar:
             cursor.execute(f"SELECT COUNT(*) FROM {table}")
             count = cursor.fetchone()[0]
             st.write(f"- {table} ({count} rows)")
+
+    st.write('\n')  
+    st.write('\n')  
+    st.write('#Knowledgebase')
+    for item in os.listdir(Config.Paths.KNOWLEDGE_BASE_DIR):
+        if item.endswith('.pdf'):
+            st.write(f"- {item}")
 
 if "messages" not in st.session_state:
     st.session_state.messages = create_history()
