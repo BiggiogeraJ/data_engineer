@@ -6,7 +6,9 @@ from langchain.tools import tool
 from langchain_core.messages import ToolMessage
 from langchain_core.messages.tool import ToolCall
 from langchain_core.tools import BaseTool
+from langchain_chroma import Chroma
 
+from dataeng.preprocessing.embedder import get_embedder
 from dataeng.sqlagent.config import Config
 from dataeng.sqlagent.logging import log_panel, log
 
@@ -17,7 +19,7 @@ def get_available_tools() -> List[BaseTool]:
     Returns:
         List[BaseTool]: A list of tools that can be used by the SQL agent.
     """
-    return [list_tables, sample_table, describe_table, execute_sql]
+    return [list_tables, sample_table, describe_table, execute_sql, get_rag_data]
 
 def call_tool(tool_call: ToolCall) -> Any:
     """
@@ -156,3 +158,44 @@ def execute_sql(reasoning: str, sql_query: str) -> str:
     except Exception as e:
         log(f"[red]Error running query: {str(e)}[/red]")
         return f"Error running query: {str(e)}"
+    
+@tool(parse_docstring=True)
+def get_rag_data(reasoning: str, user_query: str) -> str:
+    """
+    Returns relevant information from the RAG database based on the user's query. The database contains information on data engineering concepts
+    and best practices, which can be used to supplement the user's query.
+    
+    Args:
+        reasoning (str): Detailed explanation of why you need to query the RAG database for more information (relate to the user's query).
+        user_query (str): Relevant part of the user's query to pass to the database to reetrieve relevant data.
+    
+    Returns:
+        str: String containing relevant information from the RAG database.
+    """
+    CHROMA_PATH = "chroma_db_de"
+
+    log_panel(title="Get RAG data Tool", content=f"User query: {user_query}\nReasoning: {reasoning}")
+
+    try:
+        embedding_function = get_embedder()
+        db = Chroma(persist_directory=CHROMA_PATH, embedding_function=embedding_function)
+        retriever = db.as_retriever(search_kwargs={"k": 5})
+        # Search the DB.
+        results = retriever.invoke(user_query)
+
+        #context_text = "\n\n---\n\n".join([doc.page_content for doc in results])
+        #prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
+        #prompt = prompt_template.format(context=context_text, question=query_text)
+        # print(prompt)
+
+        #model = OllamaLLM(model="llama3.2", temperature=0.1)
+        #response_text = model.invoke(prompt)
+
+        sources = [" ".join(['text: '+ doc.page_content, ', source: '+ doc.metadata.get("source", None), ', page: '+str(doc.metadata.get("page", None))]) for doc in results]
+        #formatted_response = f"Response: \n{response_text}\nSources: {sources}"
+        log_panel(title="Get RAG data Tool", content=f"User query: {user_query}\nReasoning: {reasoning}\nSources: {sources}")
+        return "\n".join(sources)
+    except Exception as e:
+        log(f"[red]Error querying RAG DB: {str(e)}[/red]")
+        return f"Error querying RAG DB: {str(e)}"
+    
